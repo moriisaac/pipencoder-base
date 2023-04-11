@@ -1,6 +1,9 @@
 
+# import os
+# from . import __file__
 import os
-from . import __file__
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+
 
 """
 Application configuration.
@@ -9,7 +12,7 @@ Most configuration is set with environment variables.
 
 class AppConfig(object):
 
-  FLASK_ENV = os.environ.get('FLASK_ENV')
+  FLASK_ENV = os.environ.get('FLASK_ENV','Development')
   DEBUG = FLASK_ENV == 'Development'
   DEVELOPMENT = FLASK_ENV == 'Development'
   TESTING = FLASK_ENV == 'Testing'
@@ -19,7 +22,12 @@ class AppConfig(object):
   #SESSION_REFRESH_EACH_REQUEST = True
   SESSION_COOKIE_SECURE = False # HTTPs only
   SESSION_COOKIE_HTTPONLY = True
-  PERMANENT_SESSION_LIFETIME = int(os.environ.get('PERMANENT_SESSION_LIFETIME'))
+  PERMANENT_SESSION_LIFETIME = 3600
+  # if PERMANENT_SESSION_LIFETIME is None:
+  #    PERMANENT_SESSION_LIFETIME = 3600
+  # else:
+  #   PERMANENT_SESSION_LIFETIME = int(PERMANENT_SESSION_LIFETIME)
+
   USE_SESSION_FOR_NEXT = True
   #REMEMBER_COOKIE_DURATION = int(os.environ.get('REMEMBER_COOKIE_DURATION'))
   #REMEMBER_COOKIE_HTTPONLY = True
@@ -35,12 +43,16 @@ class AppConfig(object):
   TEMPLATES_DIR = os.path.join(SYSTEM_ROOT, 'templates')
   EMAIL_TEMPLATE_ERROR = 'mail_error.html'
   EMAIL_TEMPLATE_ACTION = 'mail_action.html'
-
+  os.environ['DB_NAME'] = 'pipenc_base.db'
   DB_ROOT = os.path.join(SYSTEM_ROOT, 'db')
   MIGRATIONS_DIR = os.path.join(DB_ROOT, 'migrations')
   SQLALCHEMY_DATABASE_URI = os.path.join('sqlite:///' + DB_ROOT, os.environ.get('DB_NAME'))
+  print(SQLALCHEMY_DATABASE_URI)
   SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+  LOG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs', 'system')
+  if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
   LOG_DIR_ROOT = os.path.join(SYSTEM_ROOT, 'logs')
   LOG_DIR_SYSTEM = os.path.join(LOG_DIR_ROOT, 'system')
   LOG_DIR_JOBS = os.path.join(LOG_DIR_ROOT, 'jobs')
@@ -78,6 +90,7 @@ class AppConfig(object):
   HEADERS_JSON = { 'Content-Type': 'application/json' }
   JSONIFY_PRETTYPRINT_REGULAR = True
 
+  os.environ['CLOUD_API_URL'] = 'http://pipencoder.com/api/v1'
   CLOUD_API_URL = os.environ.get('CLOUD_API_URL')
   NODE_AUTH = os.path.join(CLOUD_API_URL, 'login')
   NODE_LICENSE = os.path.join(CLOUD_API_URL, 'node', 'license')
