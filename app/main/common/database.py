@@ -14,7 +14,7 @@ from main.common.log import logger_scope
 from main.common.config import app_config
 
 
-engine = create_engine(app_config.SQLALCHEMY_DATABASE_URI, convert_unicode = True)
+engine = create_engine(app_config.SQLALCHEMY_DATABASE_URI, pool_pre_ping=True)
 db_session = scoped_session(sessionmaker(autocommit = False, autoflush = False, bind = engine))
 Base = declarative_base()
 Base.query = db_session.query_property()
